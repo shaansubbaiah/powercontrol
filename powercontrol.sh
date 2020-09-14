@@ -24,7 +24,7 @@ toggle_batteryconserve() {
     elif [ "$batteryconserve" = "Off" ]; then
         echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' | sudo tee /proc/acpi/call
     else
-        echo 'Error :('
+        echo 'Something went wrong, exiting :('
         exit 0
     fi
 
@@ -38,7 +38,7 @@ toggle_rapidcharge() {
     elif [ "$rapidcharge" = "Off" ]; then
         echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | sudo tee /proc/acpi/call
     else
-        echo 'Error :('
+        echo 'Something went wrong, exiting :('
         exit 0
     fi
 
@@ -93,33 +93,68 @@ get_mode() {
 }
 
 switch_mode() {
-    if [ "$mode_val" = 1 ]; then
+    case $mode_val in
+    1)
         echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
-    elif [ "$mode_val" = 2 ]; then
+        ;;
+    2)
         echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001' | sudo tee /proc/acpi/call
-    elif [ "$mode_val" = 3 ]; then
+        ;;
+    3)
         echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001' | sudo tee /proc/acpi/call
-    fi
+        ;;
+    *)
+        echo "Mode $mode_val is invalid!" >&2
+        echo "
+        Options :
+            1 - Battery Saving, 2 - Intelligent Cooling, 3 - Extreme Performance
+        "
+        exit 1
+        ;;
+    esac
 
     get_mode
     echo "Set Mode [$mode]"
 }
 
 display_info() {
-    echo "$mode"
-    echo "Battery Conservation [$batteryconserve]"
-    echo "Rapid Charge         [$rapidcharge]"
+    echo "
+    $mode
+    Battery Conservation [$batteryconserve]
+    Rapid Charge         [$rapidcharge]
+    "
 }
 
-display_help() {
-    echo "you need help"
-    exit 1
+usage() {
+    echo "
+- POWERCONTROL ----------
+  Shell script to control power and battery settings on the Lenovo IdeaPad 14ARE05, 15ARE05.
+  
+  Usage:
+    powercontrol [OPTIONS]
+
+  Options:
+    -i, --info              Display current power mode and battery status
+    -r, --rapid-charge      Toggle Rapid Charge
+    -c, --battery-conserve  Toggle Battery Conservation (Doesn't charge >60%)
+    -m, --mode [value]     Switch power mode, values:
+                              1 - Battery Saving, 2 - Intelligent Cooling, 3 - Extreme Performance
+    -h, --help              View this help page
+"
 }
 
+# ------------------
+#
+# PowerControl start
+#
+# ------------------
+
+# Get current settings
 get_mode
 get_batteryconserve
 get_rapidcharge
 
+# Handle arguments
 for arg in "$@"; do
     case $arg in
     -i | --info)
@@ -135,19 +170,18 @@ for arg in "$@"; do
         shift
         ;;
     -m | --mode)
-        if [ "$2" = 1 ] || [ "$2" = 2 ] || [ "$2" = 3 ]; then
-            mode_val=$2
-            switch_mode
-        else
-            echo "$1 doesn't support option $2" >&2
-            exit 1
-        fi
-
-        get_mode
-
+        mode_val=$2
+        switch_mode
+        shift
         ;;
     -h | --help)
-        display_help
+        usage
+        exit 1
+        ;;
+    *)
+        echo "$1 is an invalid command!"
+        usage
+        exit 1
         ;;
     esac
 done
