@@ -6,8 +6,14 @@
 
 # Check if acpi_call is loaded
 if ! lsmod | grep -q acpi_call; then
-    echo "Error: acpi_call module not loaded"
-    exit
+    echo "Error: acpi_call module not loaded!" >&2
+    exit 1
+fi
+
+# Check if root
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must run as root!" >&2
+    exit 1
 fi
 
 # Set it to Intelligent Cooling mode:
@@ -91,14 +97,10 @@ echo "
     -- PowerControl Menu --
 "
 
-# get_mode
+# -- PowerControl --------
 
-# get_rapidcharge
+# Intelligent Cooling
+# Battery Conservation [x]
+# Rapid Charge         [x]
 
-# get_batteryconserve
-
-get_rapidcharge
-
-toggle_rapidcharge
-
-get_rapidcharge
+exit 0
