@@ -1,7 +1,9 @@
-<center> 
+<div align="center">
 <h1> ⚡powercontrol </h1>
-💻 Shell script to control power and battery settings on the Lenovo Ideapad
-</center>
+  💻 Shell script to control power and battery settings on the Lenovo Ideapad
+</div>
+
+<br>
 
 Tested on the Ideapad 14ARE05 Ryzen 7 4700U (Should work on the Ideapad 14ARE05, 15ARE05 models).
 
