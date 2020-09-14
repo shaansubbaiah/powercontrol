@@ -1,8 +1,10 @@
 #!/bin/sh
+
 # Power control for Ideapad 14ARE05, 15ARE05
 # by Shaan Subbaiah
 
-# Built using https://wiki.archlinux.org/index.php/Lenovo_IdeaPad_5_14are05#Tips_and_tricks
+# Built using information from the Arch Wiki
+# https://wiki.archlinux.org/index.php/Lenovo_IdeaPad_5_14are05#Tips_and_tricks
 
 # Check if acpi_call is loaded
 if ! lsmod | grep -q acpi_call; then
@@ -90,24 +92,6 @@ get_mode() {
     # echo Mode: "$mode"
 }
 
-# set_batterysaving() {
-#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
-#     get_mode
-#     echo "Set Mode [$mode]"
-# }
-
-# set_intelligentcooling() {
-#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001' | sudo tee /proc/acpi/call
-#     get_mode
-#     echo "Set Mode [$mode]"
-# }
-
-# set_extremeperformance() {
-#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001' | sudo tee /proc/acpi/call
-#     get_mode
-#     echo "Set Mode [$mode]"
-# }
-
 switch_mode() {
     if [ "$mode_val" = 1 ]; then
         echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
@@ -154,11 +138,6 @@ for arg in "$@"; do
         if [ "$2" = 1 ] || [ "$2" = 2 ] || [ "$2" = 3 ]; then
             mode_val=$2
             switch_mode
-        #       echo set_batterysaving
-        # elif [ "$2" = 2 ]; then
-        #     echo set_intelligentcooling
-        # elif [ "$2" = 3 ]; then
-        #     echo set_extremeperformance
         else
             echo "$1 doesn't support option $2" >&2
             exit 1
