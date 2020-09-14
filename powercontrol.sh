@@ -23,8 +23,25 @@ toggle_batteryconserve() {
         echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' | sudo tee /proc/acpi/call
     else
         echo 'Error :('
-        return
+        exit 0
     fi
+
+    get_batteryconserve
+    echo "Set Battery Conservation [$batteryconserve]"
+}
+
+toggle_rapidcharge() {
+    if [ "$rapidcharge" = "On" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' | sudo tee /proc/acpi/call
+    elif [ "$rapidcharge" = "Off" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | sudo tee /proc/acpi/call
+    else
+        echo 'Error :('
+        exit 0
+    fi
+
+    get_rapidcharge
+    echo "Set Rapid Charge [$rapidcharge]"
 }
 
 get_batteryconserve() {
@@ -38,17 +55,6 @@ get_batteryconserve() {
     fi
 
     # echo BatteryConservation: $batteryconserve
-}
-
-toggle_rapidcharge() {
-    if [ "$rapidcharge" = "On" ]; then
-        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' | sudo tee /proc/acpi/call
-    elif [ "$rapidcharge" = "Off" ]; then
-        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | sudo tee /proc/acpi/call
-    else
-        echo 'Error :('
-        return
-    fi
 }
 
 get_rapidcharge() {
@@ -84,20 +90,35 @@ get_mode() {
     # echo Mode: "$mode"
 }
 
-set_batterysaving() {
-    echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
-}
+# set_batterysaving() {
+#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
+#     get_mode
+#     echo "Set Mode [$mode]"
+# }
 
-set_intelligentcooling() {
-    echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001' | sudo tee /proc/acpi/call
-}
+# set_intelligentcooling() {
+#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001' | sudo tee /proc/acpi/call
+#     get_mode
+#     echo "Set Mode [$mode]"
+# }
 
-set_extremeperformance() {
-    echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001' | sudo tee /proc/acpi/call
-}
+# set_extremeperformance() {
+#     echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001' | sudo tee /proc/acpi/call
+#     get_mode
+#     echo "Set Mode [$mode]"
+# }
 
 switch_mode() {
+    if [ "$mode_val" = 1 ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
+    elif [ "$mode_val" = 2 ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x000FB001' | sudo tee /proc/acpi/call
+    elif [ "$mode_val" = 3 ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0012B001' | sudo tee /proc/acpi/call
+    fi
 
+    get_mode
+    echo "Set Mode [$mode]"
 }
 
 display_info() {
@@ -130,12 +151,14 @@ for arg in "$@"; do
         shift
         ;;
     -m | --mode)
-        if [ "$2" = 1 ]; then
-            echo set_batterysaving
-        elif [ "$2" = 2 ]; then
-            echo set_intelligentcooling
-        elif [ "$2" = 3 ]; then
-            echo set_extremeperformance
+        if [ "$2" = 1 ] || [ "$2" = 2 ] || [ "$2" = 3 ]; then
+            mode_val=$2
+            switch_mode
+        #       echo set_batterysaving
+        # elif [ "$2" = 2 ]; then
+        #     echo set_intelligentcooling
+        # elif [ "$2" = 3 ]; then
+        #     echo set_extremeperformance
         else
             echo "$1 doesn't support option $2" >&2
             exit 1
