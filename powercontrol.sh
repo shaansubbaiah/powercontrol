@@ -19,13 +19,18 @@ fi
 # Set it to Battery Saving mode:
 #  $ echo '\_SB.PCI0.LPC0.EC0.VPC0.DYTC 0x0013B001' | sudo tee /proc/acpi/call
 
+toggle_batteryconserve() {
+    if [ $batteryconserve == "On" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' | sudo tee /proc/acpi/call
+    elif [ $batteryconserve == "Off" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' | sudo tee /proc/acpi/call
+    else
+        echo 'Error :('
+        return
+    fi
+}
+
 get_batteryconserve() {
-    # Turn on:
-    # $ echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' | sudo tee /proc/acpi/call
-
-    # Turn off:
-    # $ echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' | sudo tee /proc/acpi/call
-
     echo '\_SB.PCI0.LPC0.EC0.BTSG' | sudo tee /proc/acpi/call
     btsg=$(sudo cat /proc/acpi/call | cut -d '' -f1)
 
@@ -38,13 +43,18 @@ get_batteryconserve() {
     echo BatteryConservation: $batteryconserve
 }
 
+toggle_rapidcharge() {
+    if [ $rapidcharge == "On" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' | sudo tee /proc/acpi/call
+    elif [ $rapidcharge == "Off" ]; then
+        echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | sudo tee /proc/acpi/call
+    else
+        echo 'Error :('
+        return
+    fi
+}
+
 get_rapidcharge() {
-    #  Turn on:
-    #  $ echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' | sudo tee /proc/acpi/call
-
-    # Turn off:
-    #  $ echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' | sudo tee /proc/acpi/call
-
     echo '\_SB.PCI0.LPC0.EC0.FCGM' | sudo tee /proc/acpi/call
     fcgm=$(sudo cat /proc/acpi/call | cut -d '' -f1)
 
@@ -81,8 +91,14 @@ echo "
     -- PowerControl Menu --
 "
 
-get_mode
+# get_mode
+
+# get_rapidcharge
+
+# get_batteryconserve
 
 get_rapidcharge
 
-get_batteryconserve
+toggle_rapidcharge
+
+get_rapidcharge
