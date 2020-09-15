@@ -137,7 +137,7 @@ usage() {
     -i, --info              Display current power mode and battery status
     -r, --rapid-charge      Toggle Rapid Charge
     -c, --battery-conserve  Toggle Battery Conservation (Doesn't charge >60%)
-    -m, --mode [value]     Switch power mode, values:
+    -m, --mode [value]      Switch power mode, values:
                               1 - Battery Saving, 2 - Intelligent Cooling, 3 - Extreme Performance
     -h, --help              View this help page
 "
@@ -148,6 +148,12 @@ usage() {
 # PowerControl start
 #
 # ------------------
+
+# Display usage if no args are supplied
+if [ -z "$1" ]; then
+    usage
+    exit 1
+fi
 
 # Get current settings
 get_mode
