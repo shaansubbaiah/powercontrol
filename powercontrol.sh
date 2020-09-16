@@ -178,7 +178,7 @@ for arg in "$@"; do
     -m | --mode)
         mode_val=$2
         switch_mode
-        shift
+        exit 1
         ;;
     -h | --help)
         usage
