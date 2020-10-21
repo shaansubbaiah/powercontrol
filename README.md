@@ -27,9 +27,9 @@ Built using information from the [Arch Wiki](https://wiki.archlinux.org/index.ph
 
 ## Get Started
 
-1. First install `acpi_call` (or `acpi_call-lts` for LTS kernel, `acpi_call-dkms` for other kernels) and load the kernel module using: `sudo modprobe acpi_call
+1. First install `acpi_call` (or `acpi_call-lts` for LTS kernel, `acpi_call-dkms` for other kernels) and load the kernel module using: `sudo modprobe acpi_call`
 
-2. Clone the repository
+2. Clone the repository and navigate to the directory `git clone https://github.com/shaansubbaiah/powercontrol.git && cd powercontrol` 
 
 3. Make script executable: `chmod +x powercontrol.sh`
 
