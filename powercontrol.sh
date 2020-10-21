@@ -13,7 +13,7 @@ toggle_batteryconserve() {
         echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' >/proc/acpi/call
     else
         echo 'Something went wrong, exiting :('
-        exit 0
+        exit 1
     fi
 
     get_batteryconserve
@@ -27,7 +27,7 @@ toggle_rapidcharge() {
         echo '\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' >/proc/acpi/call
     else
         echo 'Something went wrong, exiting :('
-        exit 0
+        exit 1
     fi
 
     get_rapidcharge
@@ -178,11 +178,11 @@ for arg in "$@"; do
     -m | --mode)
         mode_val=$2
         switch_mode
-        exit 1
+        exit 0
         ;;
     -h | --help)
         usage
-        exit 1
+        exit 0
         ;;
     *)
         echo "$1 is an invalid command!"
@@ -192,4 +192,4 @@ for arg in "$@"; do
     esac
 done
 
-exit 1
+exit 0
