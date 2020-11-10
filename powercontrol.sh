@@ -40,7 +40,7 @@ toggle_rapidcharge() {
 
 get_batteryconserve() {
     echo '\_SB.PCI0.LPC0.EC0.BTSG' >/proc/acpi/call
-    btsg=$(sudo cat /proc/acpi/call | cut -d '' -f1)
+    btsg=$(cat /proc/acpi/call | cut -d '' -f1)
 
     if [ "$btsg" = 0x0 ]; then
         batteryconserve="Off"
@@ -53,7 +53,7 @@ get_batteryconserve() {
 
 get_rapidcharge() {
     echo '\_SB.PCI0.LPC0.EC0.FCGM' >/proc/acpi/call
-    fcgm=$(sudo cat /proc/acpi/call | cut -d '' -f1)
+    fcgm=$(cat /proc/acpi/call | cut -d '' -f1)
 
     if [ "$fcgm" = 0x0 ]; then
         rapidcharge="Off"
@@ -66,10 +66,10 @@ get_rapidcharge() {
 
 get_mode() {
     echo '\_SB.PCI0.LPC0.EC0.STMD' >/proc/acpi/call
-    stmd=$(sudo cat /proc/acpi/call | cut -d '' -f1)
+    stmd=$(cat /proc/acpi/call | cut -d '' -f1)
 
     echo '\_SB.PCI0.LPC0.EC0.QTMD' >/proc/acpi/call
-    qtmd=$(sudo cat /proc/acpi/call | cut -d '' -f1)
+    qtmd=$(cat /proc/acpi/call | cut -d '' -f1)
 
     # echo 'qtmd:' "$qtmd" 'stmd:' "$stmd"
 
