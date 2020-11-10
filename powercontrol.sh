@@ -16,6 +16,10 @@ toggle_batteryconserve() {
         exit 1
     fi
 
+    # Delay reading back the new state, or else the old state will be reported.
+    # Required since BIOS version DTCN20WW(V1.06) on the IdeaPad 14ARE05.
+    sleep 0.01
+
     get_batteryconserve
     echo "Set Battery Conservation [$batteryconserve]"
 }
