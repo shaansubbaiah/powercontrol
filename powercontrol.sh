@@ -141,15 +141,15 @@ usage() {
 #
 # ------------------
 
-# Check if acpi_call is loaded
-if ! lsmod | grep -q acpi_call; then
-    echo "Error: acpi_call module not loaded!" >&2
-    exit 1
-fi
-
 # Check if root
 if [ "$(id -u)" != "0" ]; then
     echo "This script must run as root!" >&2
+    exit 1
+fi
+
+# Load acpi_call module
+if ! modprobe acpi_call; then
+    echo "Error: acpi_call module could not be loaded!" >&2
     exit 1
 fi
 
